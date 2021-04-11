@@ -1,0 +1,48 @@
+function getScrolls() {
+  var habId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+  var habToken = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+  var ss= SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/xxxxx_xxxxxxxxxxxxxxxx__xxxxxxxxxxxxxxxxxxxxxx/edit?usp=sharing");
+  var sheet = ss.getSheetByName("Scrolls");
+  var response = "";
+  var data = "";
+  var i = 1;
+  var user ="";
+  var quests = "";
+  
+  var paramsTemplate = {
+    "contentType": "application/json",
+    "method" : "get", 
+    "headers" : {
+      "x-api-client" : habId + "-private script -get questScrolls",
+      "x-api-user" : habId, 
+      "x-api-key" : habToken
+    }
+  }
+  var params = paramsTemplate;
+  
+  sheet.clear();
+  
+  response = JSON.parse(UrlFetchApp.fetch("https://habitica.com/api/v3/groups/party/members", params));
+   
+  for each (var key in response.data){
+    Utilities.sleep(500);
+    i++;
+    sheet.getRange(i, 1).setValue(key._id);
+    sheet.getRange(i, 2).setValue(key.profile.name);
+    user = JSON.parse(UrlFetchApp.fetch("https://habitica.com/api/v3/members/" + key._id, params));
+    //var questObject= JSON.stringify(user.data.items.quests); 
+     
+    //sheet.getRange(i, 3).setValue(user.data.items.quests);
+    
+    for(var quest in user.data.items.quests) {
+      var k = user.data.items.quests[quest];
+      if (k > 0) {
+        sheet.getRange(i, 2).setValue(key.profile.name);
+        sheet.getRange(i, 3).setValue(quest);
+        sheet.getRange(i, 4).setValue(k);
+        i++;
+      }
+      
+    }
+    }
+ 
