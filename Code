@@ -41,8 +41,7 @@ function getScrolls() {
         sheet.getRange(i, 3).setValue(quest);
         sheet.getRange(i, 4).setValue(k);
         i++;
-      }
-      
+      } 
     }
-    }
- 
+  }
+}
